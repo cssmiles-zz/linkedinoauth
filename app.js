@@ -105,7 +105,7 @@ function getData(uid, callback) {
     findfromdb(uid, function (obj) {
         var options = {
             host: 'api.linkedin.com',
-            path: '/v1/people/~?format=json',
+            path: '/v1/people/~:(id,first-name,last-name,headline,picture-url,location,industry,current-share,num-connections,summary,specialties,positions)?format=json',
             protocol: 'https:',
             method: 'GET',
             headers: {
@@ -115,10 +115,15 @@ function getData(uid, callback) {
         };
         var req = http.request(options, function (res) {
             res.setEncoding('utf8');
+            var data = '';
             res.on('data', function (chunk) {
-                callback(chunk);
+                console.log('PROFILE DATA  ', chunk);
+                data += chunk;
+
+
             });
             res.on('end', function () {
+                callback(JSON.parse(data));
                 console.log('No more data in response.');
             });
             req.on('error', function (e) {
